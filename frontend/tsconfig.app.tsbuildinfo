@@ -1,1 +1,0 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/layout/applayout.tsx","./src/hooks/usehealthcheck.ts","./src/pages/scaffoldinghome.tsx","./src/services/apiclient.ts","./src/types/index.ts","./src/utils/env.ts"],"version":"5.9.3"}
