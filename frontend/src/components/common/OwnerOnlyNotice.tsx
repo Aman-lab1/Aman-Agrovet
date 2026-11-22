@@ -15,8 +15,8 @@ export function OwnerOnlyNotice({ moduleName }: OwnerOnlyNoticeProps) {
             {moduleName} — Owner-Only Module
           </h2>
           <p className="mt-1 text-sm text-muted">
-            You are currently viewing the application in <strong>Manager / Supervisor (Demo Preview)</strong> mode.
-            Managers have zero UI or backend access to Finance, Salaries, Team Access, or Activity &amp; Audit Logs.
+            Your account has the <strong>Manager / Supervisor</strong> role. Managers have zero UI
+            or backend access to Employees, Finance, Settings &amp; Setup, or Activity &amp; Audit Logs.
           </p>
           <Link
             to="/"

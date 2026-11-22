@@ -56,9 +56,9 @@ export const NAV_ITEMS: NavItem[] = [
     mobilePrimary: true,
   },
   {
-    id: 'farms',
-    label: 'Farms & Houses',
-    shortLabel: 'Farms',
+    id: 'houses',
+    label: 'Houses & Batches',
+    shortLabel: 'Houses',
     path: '/farms',
     icon: Building2,
   },

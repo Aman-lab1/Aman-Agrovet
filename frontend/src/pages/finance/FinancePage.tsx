@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { ModuleShell } from '../../components/common/ModuleShell';
 import { OwnerOnlyNotice } from '../../components/common/OwnerOnlyNotice';
-import { useRolePreview } from '../../contexts/RolePreviewContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function FinancePage() {
-  const { isOwner } = useRolePreview();
+  const { isOwner } = useAuth();
   const [activeTab, setActiveTab] = useState<'expenses' | 'salaries' | 'payments'>('expenses');
 
   if (!isOwner) {
@@ -14,7 +14,7 @@ export function FinancePage() {
   const columnsByTab: Record<'expenses' | 'salaries' | 'payments', string[]> = {
     expenses: [
       'Expense Date',
-      'Farm / Overhead',
+      'House / Overhead',
       'Category',
       'Vendor',
       'Amount (INR ₹)',
@@ -60,7 +60,7 @@ export function FinancePage() {
       ]}
       activeTabId={activeTab}
       onTabChange={(id) => setActiveTab(id as 'expenses' | 'salaries' | 'payments')}
-      filters={['Date Range', 'Farm', 'Status (Active / Voided / Reversed)']}
+      filters={['Date Range', 'House', 'Status (Active / Voided / Reversed)']}
       columns={columnsByTab[activeTab]}
       summaryStrip={
         <div className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-surface p-4 sm:grid-cols-4">

@@ -1,10 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import { NAV_ITEMS } from '../../config/navigation';
-import { useRolePreview } from '../../contexts/RolePreviewContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { useHealthCheck } from '../../hooks/useHealthCheck';
 
 export function Sidebar() {
-  const { isOwner } = useRolePreview();
+  const { isOwner } = useAuth();
   const { loading, data, error } = useHealthCheck();
 
   const visibleItems = NAV_ITEMS.filter((item) => !item.ownerOnly || isOwner);
@@ -29,7 +29,7 @@ export function Sidebar() {
               to={item.path}
               end={item.path === '/'}
               className={({ isActive }) =>
-                `flex min-h-[44px] items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                `flex min-h-[44px] items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ${
                   isActive
                     ? 'bg-primary text-white'
                     : 'text-muted hover:bg-background hover:text-foreground'
@@ -54,7 +54,7 @@ export function Sidebar() {
             <span className="font-mono font-medium text-status-nominal">OK</span>
           )}
         </div>
-        <p className="mt-1 font-mono text-[11px] text-muted">Phase 2 · UI Preview</p>
+        <p className="mt-1 font-mono text-[11px] text-muted">Phase 3 · Auth &amp; DB</p>
       </div>
     </aside>
   );

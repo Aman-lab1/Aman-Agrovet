@@ -1,7 +1,7 @@
 import { AlertTriangle, Building2 } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useRolePreview } from '../../contexts/RolePreviewContext';
+import { useAuth } from '../../contexts/AuthContext';
 import {
   DATE_RANGE_LABELS,
   DEMO_DASHBOARD_BY_RANGE,
@@ -21,11 +21,10 @@ const PRESETS: DateRangePreset[] = ['today', 'last_7_days', 'this_month', 'cumul
 export function DashboardPage() {
   const [range, setRange] = useState<DateRangePreset>('today');
   const [selectedHouseId, setSelectedHouseId] = useState<string>('all');
-  const { isOwner } = useRolePreview();
+  const { isOwner } = useAuth();
 
   const dataset = DEMO_DASHBOARD_BY_RANGE[range];
 
-  // Flexible house selection for both Owner and Manager (supports leave coverage)
   const visibleBatches =
     selectedHouseId === 'all'
       ? dataset.batches
@@ -70,11 +69,11 @@ export function DashboardPage() {
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-status-warning" aria-hidden="true" />
           <div>
             <p className="font-semibold text-foreground">
-              DEMO / SAMPLE DATA — Phase 2 UI Preview (Not Live Farm Records)
+              DEMO / SAMPLE DATA — Live Operational Tables Connected in Phases 4–6
             </p>
             <p className="mt-0.5 text-xs text-muted">
-              Reference Date: <span className="font-mono">{dataset.referenceDate}</span> · Live PostgreSQL
-              queries and Firebase Authentication will be connected in Phases 3–7.
+              Reference Date: <span className="font-mono">{dataset.referenceDate}</span> · Authentication
+              and PostgreSQL schema are active; operational metrics below remain sample preview figures.
             </p>
           </div>
         </div>
@@ -144,16 +143,9 @@ export function DashboardPage() {
       <section aria-label="Overall summary KPIs" className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
         <article className="rounded-lg border border-border bg-surface p-5 transition-all duration-200 hover:shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Farms, Houses &amp; Active Batches
+            Houses &amp; Active Batches
           </p>
           <div className="mt-3 flex items-baseline gap-3">
-            <div>
-              <span className="font-mono text-2xl font-semibold text-foreground">
-                {dataset.totalFarms}
-              </span>
-              <span className="ml-1 text-xs text-muted">Farm</span>
-            </div>
-            <span className="text-border">/</span>
             <div>
               <span className="font-mono text-2xl font-semibold text-foreground">
                 {visibleBatches.length}
@@ -168,7 +160,7 @@ export function DashboardPage() {
                 {visibleBatches.length}
               </span>
               <span className="ml-1 text-xs text-muted">
-                {visibleBatches.length === 1 ? 'Batch' : 'Batches'}
+                {visibleBatches.length === 1 ? 'Active Batch' : 'Active Batches'}
               </span>
             </div>
           </div>
@@ -375,17 +367,14 @@ export function DashboardPage() {
                       <h3 className="font-display text-sm font-bold text-foreground">
                         {batch.houseName} · <span className="font-mono">{batch.batchCode}</span>
                       </h3>
-                      <p className="text-xs text-muted">{batch.farmName}</p>
+                      <p className="text-xs text-muted">
+                        Primary Assigned: <span className="font-medium text-primary">{batch.primarySupervisor}</span>
+                      </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <span className="inline-block rounded border border-border bg-background px-2.5 py-0.5 font-mono text-xs font-semibold text-foreground">
-                      {flockAge}
-                    </span>
-                    <p className="mt-1 text-[11px] font-medium text-primary">
-                      Primary Assigned: {batch.primarySupervisor}
-                    </p>
-                  </div>
+                  <span className="inline-block rounded border border-border bg-background px-2.5 py-0.5 font-mono text-xs font-semibold text-foreground">
+                    {flockAge}
+                  </span>
                 </div>
 
                 <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -454,7 +443,7 @@ export function DashboardPage() {
                 Financial Summary — INR (₹) · Owner-Only
               </h2>
               <p className="text-xs text-muted">
-                Exact paise-reconciled view for {DATE_RANGE_LABELS[range]} (hidden in Manager preview)
+                Exact paise-reconciled view for {DATE_RANGE_LABELS[range]} (hidden in Manager view)
               </p>
             </div>
             <span className="rounded border border-primary/30 bg-background px-2.5 py-0.5 text-[11px] font-medium text-primary">

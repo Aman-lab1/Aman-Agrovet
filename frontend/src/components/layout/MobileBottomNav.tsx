@@ -2,11 +2,11 @@ import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { NAV_ITEMS } from '../../config/navigation';
-import { useRolePreview } from '../../contexts/RolePreviewContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function MobileBottomNav() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { isOwner } = useRolePreview();
+  const { isOwner } = useAuth();
 
   const visibleItems = NAV_ITEMS.filter((item) => !item.ownerOnly || isOwner);
   const primaryItems = visibleItems.filter((item) => item.mobilePrimary);

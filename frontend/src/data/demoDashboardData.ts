@@ -9,68 +9,63 @@ export const DATE_RANGE_LABELS: Record<DateRangePreset, string> = {
 
 export interface DemoHouseSupervisor {
   houseId: string;
+  houseCode: string;
   houseName: string;
-  farmName: string;
   supervisorName: string;
-  supervisorEmail: string;
+  supervisorUsername: string;
 }
 
 export const DEMO_HOUSE_SUPERVISORS: DemoHouseSupervisor[] = [
   {
     houseId: 'house-1',
+    houseCode: 'H-01',
     houseName: 'House 1',
-    farmName: 'Farm 1 — North Sheds',
     supervisorName: 'Supervisor 1',
-    supervisorEmail: 'supervisor1@amanagrovet.demo',
+    supervisorUsername: 'supervisor1',
   },
   {
     houseId: 'house-2',
+    houseCode: 'H-02',
     houseName: 'House 2',
-    farmName: 'Farm 1 — North Sheds',
     supervisorName: 'Supervisor 2',
-    supervisorEmail: 'supervisor2@amanagrovet.demo',
+    supervisorUsername: 'supervisor2',
   },
 ];
 
 export interface DemoAppUserAccess {
   id: string;
-  email: string;
+  username: string;
   fullName: string;
   role: 'owner' | 'manager';
   isActive: boolean;
-  uidLinked: boolean;
 }
 
 export const DEMO_APP_USERS: DemoAppUserAccess[] = [
   {
     id: 'u-1',
-    email: 'amanrajpura2307@gmail.com',
+    username: 'aman',
     fullName: 'Aman Rajpura',
     role: 'owner',
     isActive: true,
-    uidLinked: true,
   },
   {
     id: 'u-2',
-    email: 'supervisor1@amanagrovet.demo',
+    username: 'supervisor1',
     fullName: 'Supervisor 1',
     role: 'manager',
     isActive: true,
-    uidLinked: true,
   },
   {
     id: 'u-3',
-    email: 'supervisor2@amanagrovet.demo',
+    username: 'supervisor2',
     fullName: 'Supervisor 2',
     role: 'manager',
     isActive: true,
-    uidLinked: false,
   },
 ];
 
 export interface DemoBatchSnapshot {
   id: string;
-  farmName: string;
   houseId: string;
   houseName: string;
   primarySupervisor: string;
@@ -94,7 +89,6 @@ export interface DemoBatchSnapshot {
 
 export interface DemoDashboardDataset {
   referenceDate: string;
-  totalFarms: number;
   totalHouses: number;
   activeBatchesCount: number;
   attendance: {
@@ -118,7 +112,6 @@ export const DEMO_REFERENCE_DATE = '2026-11-22';
 export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDataset> = {
   today: {
     referenceDate: DEMO_REFERENCE_DATE,
-    totalFarms: 1,
     totalHouses: 2,
     activeBatchesCount: 2,
     attendance: {
@@ -137,7 +130,6 @@ export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDatas
     batches: [
       {
         id: 'b-101',
-        farmName: 'Farm 1 — North Sheds',
         houseId: 'house-1',
         houseName: 'House 1',
         primarySupervisor: 'Supervisor 1',
@@ -160,7 +152,6 @@ export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDatas
       },
       {
         id: 'b-102',
-        farmName: 'Farm 1 — North Sheds',
         houseId: 'house-2',
         houseName: 'House 2',
         primarySupervisor: 'Supervisor 2',
@@ -185,7 +176,6 @@ export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDatas
   },
   last_7_days: {
     referenceDate: DEMO_REFERENCE_DATE,
-    totalFarms: 1,
     totalHouses: 2,
     activeBatchesCount: 2,
     attendance: {
@@ -204,7 +194,6 @@ export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDatas
     batches: [
       {
         id: 'b-101',
-        farmName: 'Farm 1 — North Sheds',
         houseId: 'house-1',
         houseName: 'House 1',
         primarySupervisor: 'Supervisor 1',
@@ -227,7 +216,6 @@ export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDatas
       },
       {
         id: 'b-102',
-        farmName: 'Farm 1 — North Sheds',
         houseId: 'house-2',
         houseName: 'House 2',
         primarySupervisor: 'Supervisor 2',
@@ -252,7 +240,6 @@ export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDatas
   },
   this_month: {
     referenceDate: DEMO_REFERENCE_DATE,
-    totalFarms: 1,
     totalHouses: 2,
     activeBatchesCount: 2,
     attendance: {
@@ -271,7 +258,6 @@ export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDatas
     batches: [
       {
         id: 'b-101',
-        farmName: 'Farm 1 — North Sheds',
         houseId: 'house-1',
         houseName: 'House 1',
         primarySupervisor: 'Supervisor 1',
@@ -294,7 +280,6 @@ export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDatas
       },
       {
         id: 'b-102',
-        farmName: 'Farm 1 — North Sheds',
         houseId: 'house-2',
         houseName: 'House 2',
         primarySupervisor: 'Supervisor 2',
@@ -319,7 +304,6 @@ export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDatas
   },
   cumulative: {
     referenceDate: DEMO_REFERENCE_DATE,
-    totalFarms: 1,
     totalHouses: 2,
     activeBatchesCount: 2,
     attendance: {
@@ -338,7 +322,6 @@ export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDatas
     batches: [
       {
         id: 'b-101',
-        farmName: 'Farm 1 — North Sheds',
         houseId: 'house-1',
         houseName: 'House 1',
         primarySupervisor: 'Supervisor 1',
@@ -361,7 +344,6 @@ export const DEMO_DASHBOARD_BY_RANGE: Record<DateRangePreset, DemoDashboardDatas
       },
       {
         id: 'b-102',
-        farmName: 'Farm 1 — North Sheds',
         houseId: 'house-2',
         houseName: 'House 2',
         primarySupervisor: 'Supervisor 2',

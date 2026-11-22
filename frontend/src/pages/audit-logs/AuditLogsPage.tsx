@@ -1,9 +1,9 @@
 import { ModuleShell } from '../../components/common/ModuleShell';
 import { OwnerOnlyNotice } from '../../components/common/OwnerOnlyNotice';
-import { useRolePreview } from '../../contexts/RolePreviewContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function AuditLogsPage() {
-  const { isOwner } = useRolePreview();
+  const { isOwner } = useAuth();
 
   if (!isOwner) {
     return <OwnerOnlyNotice moduleName="Activity & Audit Logs" />;
@@ -18,7 +18,7 @@ export function AuditLogsPage() {
       filters={['Entity Type', 'Action (CREATE / UPDATE / DELETE / VOID / REVERSE)', 'Actor', 'Date Range']}
       columns={[
         'Timestamp',
-        'Actor (Name / Email)',
+        'Actor (Name / Username)',
         'Action',
         'Entity',
         'Summary',

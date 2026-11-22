@@ -1,9 +1,9 @@
 import { ModuleShell } from '../../components/common/ModuleShell';
 import { OwnerOnlyNotice } from '../../components/common/OwnerOnlyNotice';
-import { useRolePreview } from '../../contexts/RolePreviewContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function EmployeesPage() {
-  const { isOwner } = useRolePreview();
+  const { isOwner } = useAuth();
 
   if (!isOwner) {
     return <OwnerOnlyNotice moduleName="Employees" />;
@@ -15,12 +15,12 @@ export function EmployeesPage() {
       subtitle="Staff directory with soft-deactivation and monthly INR salary management"
       connectedPhase="Phase 4"
       primaryActionLabel="Add Employee"
-      filters={['Status (Active / Inactive)', 'Assigned Farm', 'Search Name / Code']}
+      filters={['Status (Active / Inactive)', 'Assigned House', 'Search Name / Code']}
       columns={[
         'Employee Code',
         'Full Name',
         'Designation',
-        'Assigned Farm',
+        'Assigned House',
         'Phone',
         'Monthly Salary (INR ₹)',
         'Status',

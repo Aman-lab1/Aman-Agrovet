@@ -1,8 +1,8 @@
 import { ModuleShell } from '../../components/common/ModuleShell';
-import { useRolePreview } from '../../contexts/RolePreviewContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function ReportsPage() {
-  const { isOwner } = useRolePreview();
+  const { isOwner } = useAuth();
 
   return (
     <ModuleShell
@@ -12,14 +12,14 @@ export function ReportsPage() {
       primaryActionLabel="Export Reconciled CSV"
       filters={[
         'Preset (Daily / Weekly / Monthly / Custom / Cumulative)',
-        'Farm',
+        'House',
         isOwner
           ? 'Report Type (Attendance / Eggs / Feed / Mortality / Financial)'
           : 'Report Type (Attendance / Eggs / Feed / Mortality)',
       ]}
       columns={[
         'Period / Date',
-        'Farm / Batch',
+        'House / Batch',
         'Metric Category',
         'Operational Value',
         'Unit / Denominator',
