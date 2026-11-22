@@ -1,27 +1,44 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PhaseNoticeBanner } from '../../components/common/PhaseNoticeBanner';
-import { DEMO_DASHBOARD_BY_RANGE } from '../../data/demoDashboardData';
+import { fetchBatches } from '../../services/apiClient';
+import type { FlockBatch } from '../../types';
 import { formatNumber, formatPercent, getTodayIsoDate } from '../../utils/flockMath';
 
 export function FeedMortalityPage() {
-  const batches = DEMO_DASHBOARD_BY_RANGE.today.batches;
+  const [batches, setBatches] = useState<FlockBatch[]>([]);
+  const [loadingBatches, setLoadingBatches] = useState(true);
   const [activeTab, setActiveTab] = useState<'feed' | 'mortality'>('feed');
   const [entryDate, setEntryDate] = useState<string>(getTodayIsoDate);
-  const [selectedBatchId, setSelectedBatchId] = useState<string>(batches[0].id);
+  const [selectedBatchId, setSelectedBatchId] = useState<string>('');
 
-  // Feed state
   const [feedType, setFeedType] = useState<string>('Breeder Female Feed');
-  const [feedQty, setFeedQty] = useState<string>('14');
+  const [feedQty, setFeedQty] = useState<string>('0');
   const [feedUnit, setFeedUnit] = useState<'bags' | 'kg'>('bags');
 
-  // Mortality state
-  const [femaleDeathsInput, setFemaleDeathsInput] = useState<string>('3');
-  const [maleDeathsInput, setMaleDeathsInput] = useState<string>('1');
+  const [femaleDeathsInput, setFemaleDeathsInput] = useState<string>('0');
+  const [maleDeathsInput, setMaleDeathsInput] = useState<string>('0');
   const [reasonCategory, setReasonCategory] = useState<string>('Natural/Unknown');
 
-  const selectedBatch = batches.find((b) => b.id === selectedBatchId) ?? batches[0];
-  const liveFemales = selectedBatch.initialFemales - selectedBatch.cumulativeFemaleDeaths;
-  const liveMales = selectedBatch.initialMales - selectedBatch.cumulativeMaleDeaths;
+  useEffect(() => {
+    fetchBatches()
+      .then((rows) => {
+        const active = rows.filter((b) => b.status === 'active');
+        setBatches(active);
+        if (active.length > 0) {
+          setSelectedBatchId(String(active[0].id));
+        }
+      })
+      .catch(() => {
+        setBatches([]);
+      })
+      .finally(() => {
+        setLoadingBatches(false);
+      });
+  }, []);
+
+  const selectedBatch = batches.find((b) => String(b.id) === selectedBatchId);
+  const liveFemales = selectedBatch?.initialFemales ?? 0;
+  const liveMales = selectedBatch?.initialMales ?? 0;
 
   const femaleDeaths = Math.max(0, Number.parseInt(femaleDeathsInput || '0', 10) || 0);
   const maleDeaths = Math.max(0, Number.parseInt(maleDeathsInput || '0', 10) || 0);
@@ -31,8 +48,8 @@ export function FeedMortalityPage() {
   return (
     <div className="space-y-6">
       <PhaseNoticeBanner
-        title="Phase 2 Mobile-First Entry Preview — Connected in Phase 5"
-        description="Date defaults to Today and any active house can be selected for leave coverage. Feed units (bags vs. kg) remain strictly isolated, and mortality % calculates live."
+        title="Phase 5 Preview — Connected in Phase 5"
+        description="House / Batch dropdown reads live PostgreSQL batches. Feed units (bags vs. kg) remain strictly isolated, and mortality % calculates live. Saving is disabled until Phase 5."
       />
 
       <div>
@@ -80,7 +97,7 @@ export function FeedMortalityPage() {
               type="date"
               value={entryDate}
               onChange={(e) => setEntryDate(e.target.value)}
-              className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-sm text-foreground transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-sm text-foreground"
             />
           </div>
 
@@ -92,13 +109,20 @@ export function FeedMortalityPage() {
               id="fm-house-batch"
               value={selectedBatchId}
               onChange={(e) => setSelectedBatchId(e.target.value)}
-              className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              disabled={loadingBatches || batches.length === 0}
+              className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 text-sm font-medium text-foreground"
             >
-              {batches.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.houseName} — {b.batchCode} ({b.primarySupervisor})
-                </option>
-              ))}
+              {loadingBatches ? (
+                <option value="">Loading batches...</option>
+              ) : batches.length === 0 ? (
+                <option value="">No active batches configured</option>
+              ) : (
+                batches.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.houseName} — {b.batchCode} ({b.primarySupervisorName || 'Unassigned'})
+                  </option>
+                ))
+              )}
             </select>
           </div>
         </div>
@@ -114,7 +138,7 @@ export function FeedMortalityPage() {
                   id="feed-type"
                   value={feedType}
                   onChange={(e) => setFeedType(e.target.value)}
-                  className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 >
                   <option>Breeder Female Feed</option>
                   <option>Breeder Male Feed</option>
@@ -135,7 +159,7 @@ export function FeedMortalityPage() {
                   min={0}
                   value={feedQty}
                   onChange={(e) => setFeedQty(e.target.value)}
-                  className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-base font-semibold text-foreground transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-base font-semibold text-foreground"
                 />
               </div>
 
@@ -147,10 +171,10 @@ export function FeedMortalityPage() {
                   <button
                     type="button"
                     onClick={() => setFeedUnit('bags')}
-                    className={`min-h-[48px] rounded-md border text-sm font-medium transition-all duration-200 ${
+                    className={`min-h-[48px] rounded-md border text-sm font-medium ${
                       feedUnit === 'bags'
-                        ? 'border-primary bg-primary text-white shadow-sm'
-                        : 'border-border bg-background text-foreground hover:border-primary/40'
+                        ? 'border-primary bg-primary text-white'
+                        : 'border-border bg-background text-foreground'
                     }`}
                   >
                     Bags
@@ -158,10 +182,10 @@ export function FeedMortalityPage() {
                   <button
                     type="button"
                     onClick={() => setFeedUnit('kg')}
-                    className={`min-h-[48px] rounded-md border text-sm font-medium transition-all duration-200 ${
+                    className={`min-h-[48px] rounded-md border text-sm font-medium ${
                       feedUnit === 'kg'
-                        ? 'border-primary bg-primary text-white shadow-sm'
-                        : 'border-border bg-background text-foreground hover:border-primary/40'
+                        ? 'border-primary bg-primary text-white'
+                        : 'border-border bg-background text-foreground'
                     }`}
                   >
                     Kilograms (kg)
@@ -201,7 +225,7 @@ export function FeedMortalityPage() {
                   min={0}
                   value={femaleDeathsInput}
                   onChange={(e) => setFemaleDeathsInput(e.target.value)}
-                  className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-base font-semibold text-foreground transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-base font-semibold text-foreground"
                 />
               </div>
 
@@ -216,7 +240,7 @@ export function FeedMortalityPage() {
                   min={0}
                   value={maleDeathsInput}
                   onChange={(e) => setMaleDeathsInput(e.target.value)}
-                  className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-base font-semibold text-foreground transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-base font-semibold text-foreground"
                 />
               </div>
 
@@ -228,7 +252,7 @@ export function FeedMortalityPage() {
                   id="mort-reason"
                   value={reasonCategory}
                   onChange={(e) => setReasonCategory(e.target.value)}
-                  className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="mt-1 min-h-[48px] w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 >
                   <option>Natural/Unknown</option>
                   <option>Heat Stress</option>
